@@ -2,9 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { db } from "@/configs/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { Label } from "@/components/ui/label"; 
 import { cn } from "@/lib/utils";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,12 +10,16 @@ import { Accout } from "@/app/yup/accout";
 import Image from "next/image";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useState } from "react";
+import { User } from "@/lib/users";
 
 export function CreatAccoutForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const methods = useForm({
     resolver: yupResolver(Accout),
   });
@@ -27,35 +29,42 @@ export function CreatAccoutForm({
     formState: { errors },
   } = methods;
 
-  const onSubmit = async (data: {
-    email: string;
-    phone: string;
-    password: string;
-  }) => {
-    const { email, phone, password } = data;
-
+  const onSubmit = async (data: User) => {
+    setLoading(true);
     try {
-      // Save user data to Firestore
-      const userDocRef = doc(db, "user", email); // Use email as document ID
-      await setDoc(userDocRef, {
-        email,
-        phone,
-        status: "pending",
-        avatar: "https://ionicframework.com/docs/img/demos/avatar.svg",
-        password,
-        createdAt: new Date().toISOString(),
-      });
+      // Thêm giá trị mặc định cho `address` và `image`
+      const payload = {
+        ...data,
+        address: " ", // Giá trị mặc định
+        image: " ", // Giá trị mặc định
+      };
 
+      const response = await axios.post(
+        "http://127.0.0.1:8000/accounts/register/",
+        payload
+      );
+
+      if (response.status === 201) {
+        toast({
+          title: "Tạo tài khoản thành công!",
+          description: "Bạn có thể đăng nhập ngay bây giờ.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Lỗi!",
+          description: "Không thể tạo tài khoản. Vui lòng thử lại.",
+        });
+      }
+    } catch (error) {
+      console.log(error);
       toast({
-        title: "Tạo tài khoản thành công ",
-        description: "Đã tạo tài khoản!",
+        variant: "destructive",
+        title: "Lỗi!",
+        description: "Có lỗi xảy ra trong quá trình tạo tài khoản.",
       });
-    } catch (err) {
-      console.error("Error creating account:", err);
-      toast({
-        title: "Thất bại!",
-        description: "Vui lòng thử lại hoặc liên hệ với quản trị viên",
-      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,6 +82,42 @@ export function CreatAccoutForm({
                   <p className="text-balance text-muted-foreground">
                     Tạo một tài khoản mới
                   </p>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="username">Tên đăng nhập</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="m"
+                    {...register("username")}
+                  />
+                  {errors.username && (
+                    <p className="text-red-500">{errors.username.message}</p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="first_name">Họ</Label>
+                  <Input
+                    id="first_name"
+                    type="text"
+                    placeholder="Nguyễn"
+                    {...register("first_name")}
+                  />
+                  {errors.first_name && (
+                    <p className="text-red-500">{errors.first_name.message}</p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="last_name">Tên</Label>
+                  <Input
+                    id="last_name"
+                    type="text"
+                    placeholder="A"
+                    {...register("last_name")}
+                  />
+                  {errors.last_name && (
+                    <p className="text-red-500">{errors.last_name.message}</p>
+                  )}
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
@@ -110,8 +155,8 @@ export function CreatAccoutForm({
                     <p className="text-red-500">{errors.password.message}</p>
                   )}
                 </div>
-                <Button type="submit" className="w-full">
-                  Tạo tài khoản
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? "Đang xử lý..." : "Tạo tài khoản"}
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">

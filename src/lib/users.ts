@@ -1,11 +1,18 @@
 export type User = {
   id: string;
-  avatar: string;
+  image: string;
   status: "pending" | "processing" | "success" | "failed";
-  mail: string;
+  username: string;
+  email: string;
   cost: number;
-  name: string;
+  first_name: string;
+  last_name: string;
   phone: string;
   role: string;
+  password: string;
+};
+
+export type UserLoginForm = {
+  username: string;
   password: string;
 };
