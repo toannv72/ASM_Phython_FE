@@ -1,6 +1,7 @@
 export type User = {
   id: string;
   image: string;
+  userid: number;
   status: "pending" | "processing" | "success" | "failed";
   username: string;
   email: string;

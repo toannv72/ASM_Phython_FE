@@ -1,51 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2, Minus, Plus, ShoppingBag } from "lucide-react";
-import Image from "next/image";
+ 
+import { useStorage } from "@/hooks/useLocalStorage";
+import { useRouter } from "next/navigation";
+import { Product } from "@/lib/product";
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  selected: boolean;
-}
+ 
 
 export default function ShoppingCart() {
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "1",
-      name: "Áo Thun Thiền Trà ",
-      price: 350000,
-      image:
-        "https://i.pinimg.com/236x/10/7f/aa/107faae1cf0be5bdb89ca61eda99b95f.jpg",
-      quantity: 1,
-      selected: false,
-    },
-    {
-      id: "2",
-      name: "Túi Vải Thiền",
-      price: 180000,
-      image:
-        "https://i.pinimg.com/736x/77/88/48/778848f43d698833241812f67fd42cde.jpg",
-      quantity: 2,
-      selected: false,
-    },
-    {
-      id: "3",
-      name: "Chuông Thiền Tập",
-      price: 450000,
-      image:
-        "https://i.pinimg.com/236x/10/7f/aa/107faae1cf0be5bdb89ca61eda99b95f.jpg",
-      quantity: 1,
-      selected: false,
-    },
-  ]);
-
+  const [products, setProducts] = useState<Product[]>([]);
+  const router = useRouter();
+  const [cart, setCart, loadingCart] = useStorage("cart", []);
   const updateQuantity = (id: string, change: number) => {
     setProducts(
+      products.map((product) => {
+        if (product.id === id) {
+          const newQuantity = Math.max(1, product.quantity + change);
+          return { ...product, quantity: newQuantity };
+        }
+        return product;
+      })
+    );
+    setCart(
       products.map((product) => {
         if (product.id === id) {
           const newQuantity = Math.max(1, product.quantity + change);
@@ -58,6 +36,7 @@ export default function ShoppingCart() {
 
   const removeProduct = (id: string) => {
     setProducts(products.filter((product) => product.id !== id));
+    setCart(products.filter((product) => product.id !== id));
   };
 
   const toggleSelect = (id: string) => {
@@ -87,6 +66,25 @@ export default function ShoppingCart() {
     0
   );
 
+  useEffect(() => {
+    loadingCart();
+  }, []);
+  useEffect(() => {
+    setProducts(cart);
+  }, []);
+
+  const handleCheckout = () => {
+    if (selectedProducts.length > 0) {
+    
+
+      // Chuyển đến trang thanh toán
+      router.push(
+        `/checkout?products=${encodeURIComponent(
+          JSON.stringify(selectedProducts)
+        )}`
+      );
+    }
+  };
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-white m-6 rounded-lg  ">
       <div className="flex ite ms-center justify-between mb-6">
@@ -119,8 +117,8 @@ export default function ShoppingCart() {
                 className="w-5 h-5 rounded border-gray-300"
               />
 
-              <Image
-                src={product.image || "/fallback-image.png"}
+              <img
+                src={product.images[0]?.image || "/fallback-image.png"}
                 alt={product.name || "Product image"}
                 width={80} // Chiều rộng
                 height={80} // Chiều cao
@@ -193,6 +191,7 @@ export default function ShoppingCart() {
           </div>
 
           <button
+            onClick={handleCheckout}
             disabled={selectedProducts.length === 0}
             className="w-full bg-red-600 text-white py-3 rounded-lg font-medium
                      disabled:bg-gray-300 disabled:cursor-not-allowed

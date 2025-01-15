@@ -1,11 +1,13 @@
 export type Product = {
+  id: string;
   name: string;
-  price: string;
+  price: number;
   rating: number;
   images: Image[];
   colors: { name: string; bgColor: string; selectedColor: string }[];
   description: string;
   quantity: number;
+  selected: boolean;
   details: { name: string; items: string[] }[];
 };
 

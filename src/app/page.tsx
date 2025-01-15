@@ -1,4 +1,5 @@
 "use client";
+import { getData } from "@/api/api";
 import CategoryPreviews from "@/components/CategoryPreviews";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -29,25 +30,44 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function fetchProducts() {
-      const response = await fetch(
-        "http://127.0.0.1:8000/products/manage-products/?format=json"
-      );
-      const data: RawProduct[] = await response.json(); // Định kiểu cho dữ liệu gốc
-      const formattedProducts: Product[] = data.map((product) => ({
-        id: product.id,
-        name: product.name,
-        href: `product/${product.id}`,
-        price: `$${product.price}`, // Định dạng giá thành chuỗi
-        description: product.description,
-        options: product.category.name,
-        imageSrc: product.images[0]?.image || "", // Xử lý hình ảnh
-        imageAlt: product.name,
-      }));
-      setProducts(formattedProducts);
-    }
+    // async function fetchProducts() {
+    //   const response = await fetch(
+    //     "http://127.0.0.1:8000/products/manage-products/?format=json"
+    //   );
+    //   const data: RawProduct[] = await response.json(); // Định kiểu cho dữ liệu gốc
+    //   const formattedProducts: Product[] = data.map((product) => ({
+    //     id: product.id,
+    //     name: product.name,
+    //     href: `product/${product.id}`,
+    //     price: `$${product.price}`, // Định dạng giá thành chuỗi
+    //     description: product.description,
+    //     options: product.category.name,
+    //     imageSrc: product.images[0]?.image || "", // Xử lý hình ảnh
+    //     imageAlt: product.name,
+    //   }));
+    //   setProducts(formattedProducts);
+    // }
 
-    fetchProducts();
+    // fetchProducts();
+
+    getData("/products/manage-products/?format=json")
+      .then((response) => {
+        console.log(response);
+          const formattedProducts: Product[] = response.map((product) => ({
+            id: product.id,
+            name: product.name,
+            href: `product/${product.id}`,
+            price: `$${product.price}`, // Định dạng giá thành chuỗi
+            description: product.description,
+            options: product.category.name,
+            imageSrc: product.images[0]?.image || "", // Xử lý hình ảnh
+            imageAlt: product.name,
+          }));
+          setProducts(formattedProducts);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (

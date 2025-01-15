@@ -6,6 +6,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/product";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useStorage } from "@/hooks/useLocalStorage";
 
 export default function ProductDetail({
   params,
@@ -15,6 +16,7 @@ export default function ProductDetail({
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
   const router = useRouter();
+  const [cart, setCart, loadingCart] = useStorage("cart", []);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -65,19 +67,25 @@ export default function ProductDetail({
 
   const handleCheckout = () => {
     if (!product) return;
-
     // Chuyển hướng sang trang `/checkout` với dữ liệu sản phẩm và số lượng
     router.push(
-      `/checkout?name=${encodeURIComponent(
-        product.name
-      )}&price=${encodeURIComponent(
-        product.price
-      )}&quantity=${quantity}&total=${encodeURIComponent(
-        (parseFloat(product.price.replace("$", "")) * quantity).toFixed(2)
-      )}`
+      `/checkout?products=${encodeURIComponent(JSON.stringify([product]))}`
     );
   };
 
+  const handleAddCart = () => {
+    setCart(() => {
+      const existingProduct = cart.find((p) => p.id === product.id);
+
+      if (existingProduct) {
+        return cart.map((p) =>
+          p.id === product.id ? { ...p, quantity: p.quantity + quantity, selected:false } : p
+        );
+      }
+
+      return [...cart, { ...product, quantity, selected: false }]; // Thêm sản phẩm mới vào giỏ hàng nếu chưa tồn tại
+    });
+  };
   if (!product) {
     return (
       <div className="flex flex-col space-y-3 justify-center items-center">
@@ -184,14 +192,14 @@ export default function ProductDetail({
               </button>
             </div>
 
-            <div className="mt-10 flex">
+            <div className="mt-10  ">
               {product.quantity > 0 ? (
                 <button
                   type="button"
                   onClick={handleCheckout}
                   className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                 >
-                  Add to bag
+                  Buy now
                 </button>
               ) : (
                 <button
@@ -200,6 +208,15 @@ export default function ProductDetail({
                   disabled
                 >
                   Out of stock
+                </button>
+              )}
+              {product.quantity > 0 && (
+                <button
+                  type="button"
+                  onClick={handleAddCart}
+                  className="flex flex-1 mt-4 items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+                >
+                  Add to cart
                 </button>
               )}
             </div>

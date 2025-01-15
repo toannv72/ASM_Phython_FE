@@ -9,11 +9,13 @@ const api = axios.create({
 // Thêm interceptor cho request
 api.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    const accessToken = localStorage.getItem("accessToken"); // Lấy token từ localStorage (hoặc nơi bạn lưu trữ)
+    const accessToken = localStorage.getItem("user"); // Lấy token từ localStorage (hoặc nơi bạn lưu trữ)
 
-    if (accessToken) {
-      const Token = accessToken.replace(/"/g, ""); // Loại bỏ tất cả dấu ngoặc kép
+    if (JSON.parse(accessToken)?.access) {
+      const Token = JSON.parse(accessToken)?.access?.replace(/"/g, "");
+      console.log(  Token);
       config.headers = config.headers || {}; // Đảm bảo headers không bị undefined
+
       config.headers["Authorization"] = `Bearer ${Token}`;
     }
     return config;
@@ -36,12 +38,12 @@ export const getData = async <T,>(
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response && axiosError.response.status === 401) {
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
     throw axiosError;
   }
 };
- 
+
 export const postData = async <T, U = unknown>(
   endpoint: string,
   data: U,
