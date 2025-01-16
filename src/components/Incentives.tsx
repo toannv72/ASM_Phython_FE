@@ -37,7 +37,7 @@ export default function Incentives() {
                 lot more money if we kinda stopped caring about that. Our new
                 strategy is to write a bunch of things that look really good in
                 the headlines, then clarify in the small print but hope people
-                don't actually read it.
+                dont actually read it.
               </p>
             </div>
             <img
