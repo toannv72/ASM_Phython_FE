@@ -1,19 +1,19 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import OrderCard from "./OrderCard";
-import { getData } from "../../api/api";
 import { useStorage } from "../../hooks/useLocalStorage";
-import { Empty, Spin } from "antd";
+import OrderCard from "@/components/OrderCard";
+import { getData } from "@/api/api";
 
-export default function ListOrder({ activeKey }) {
+export default function ListOrder() {
   const [data, setData] = useState([]);
-  const [user, setUser] = useStorage("user", null);
+  const [user] = useStorage("user", null);
   const [loading, setLoading] = useState(true);
 
   const reloadData = () => {
-    getData(`/orders/accounts/${user.id}`)
+    getData(`/orders/manage-orders/?userId=${user.userid}`)
       .then((data) => {
-        setData(data?.data?.data || []);
-        // console.log(data.data.data);
+        setData(data || []);
+        console.log(data);
       })
       .catch((error) => {
         console.error(error);
@@ -25,22 +25,18 @@ export default function ListOrder({ activeKey }) {
   useEffect(() => {
     setLoading(true);
     reloadData();
-  }, [activeKey]);
+  }, []);
 
   return (
-    <div className="list-order-container">
+    <div className="list-order-container p-10">
       {loading ? (
-        <div className="flex justify-center">
-          <Spin size="large" tip="Đang tải đơn hàng..." />
-        </div>
+        <div className="flex justify-center">123123</div>
       ) : data.length === 0 ? (
-        <div className="flex justify-center">
-          <Empty description="Không có đơn hàng nào" />
-        </div>
+        <div className="flex justify-center">Không có đơn hàng nào</div>
       ) : (
         data.map((order, index) => (
           <div key={order.id || index} className="mt-4">
-            <OrderCard order={order} reloadData={reloadData} />
+            <OrderCard order={order} />
           </div>
         ))
       )}

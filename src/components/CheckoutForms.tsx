@@ -91,7 +91,7 @@ export default function CheckoutForms() {
       })
         .then((response) => {
           console.log(response);
-          // window.location.href = "/order";
+          window.location.href = response.payment_url;
         })
         .catch((error) => {
           console.error("Error placing order:", error);

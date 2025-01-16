@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "@/lib/product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStorage } from "@/hooks/useLocalStorage";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProductDetail({
   params,
@@ -17,6 +18,7 @@ export default function ProductDetail({
   const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
   const router = useRouter();
   const [cart, setCart, loadingCart] = useStorage("cart", []);
+  const { toast } = useToast();
 
   useEffect(() => {
     async function fetchProduct() {
@@ -85,6 +87,10 @@ export default function ProductDetail({
 
       return [...cart, { ...product, quantity, selected: false }]; // Thêm sản phẩm mới vào giỏ hàng nếu chưa tồn tại
     });
+      toast({
+        title: "Thêm sản phẩm",
+        description: "Sản phẩm đã được thêm vào giỏ hàng.",
+      });
   };
   if (!product) {
     return (
