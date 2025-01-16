@@ -43,7 +43,7 @@ export default function OrderCard({ order }: { order: Order }) {
     <div className=" mx-auto bg-white rounded-lg shadow-md overflow-hidden border border-[#7F7F7F]">
       <div className="p-4 bg-white flex  justify-between items-center border-b border-black">
         <div className="flex items-center ">
-          <h2 className="text-lg font-bold mr-4">123</h2>
+          <h2 className="text-lg font-bold mr-4"> </h2>
         </div>
         <div className="flex gap-1">
           <span className=" font-medium">|</span>
@@ -60,7 +60,7 @@ export default function OrderCard({ order }: { order: Order }) {
       </div>
       <div className="p-4 bg-white  border-t border-[#7F7F7F]">
         <div className="flex justify-end  gap-2 items-center mb-4 ">
-          <span className="font-medium">Thành tiền:</span>
+            <span className="font-medium">Total:</span>
           <span className="font-bold text-[#002278] text-xl">
             {order?.amount?.toLocaleString()}đ
           </span>

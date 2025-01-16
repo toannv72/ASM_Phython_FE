@@ -98,9 +98,9 @@ export default function ListOrder() {
   return (
     <div className="list-order-container p-10">
       {loading ? (
-        <div className="flex justify-center">123123</div>
+        <div className="flex justify-center">Loading</div>
       ) : data.length === 0 ? (
-        <div className="flex justify-center">Không có đơn hàng nào</div>
+        <div className="flex justify-center">No orders available</div>
       ) : (
         data.map((order, index) => (
           <div key={order.id || index} className="mt-4">

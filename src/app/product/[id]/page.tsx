@@ -81,8 +81,8 @@ export default function ProductDetail({
     const existingProduct = cart.find((p) => p.id === product?.id);
     if (existingProduct) {
         toast({
-          title: "Thêm sản phẩm",
-          description: "Sản phẩm đã được thêm vào giỏ hàng.",
+          title: "Add Product",
+          description: "The product has been added to the cart.",
         });
       return setCart(
         cart.map((p) =>
@@ -93,8 +93,8 @@ export default function ProductDetail({
       );
     }
     toast({
-      title: "Thêm sản phẩm",
-      description: "Sản phẩm đã được thêm vào giỏ hàng.",
+      title: "Add Product",
+      description: "The product has been added to the cart.",
     });
 
     return setCart([

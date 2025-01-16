@@ -32,11 +32,11 @@ export function CreatAccoutForm({
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      // Thêm giá trị mặc định cho `address` và `image`
+      // Add default values for `address` and `image`
       const payload = {
         ...data,
-        address: " ", // Giá trị mặc định
-        image: " ", // Giá trị mặc định
+        address: " ", // Default value
+        image: " ", // Default value
       };
 
       const response = await axios.post(
@@ -46,22 +46,22 @@ export function CreatAccoutForm({
 
       if (response.status === 201) {
         toast({
-          title: "Tạo tài khoản thành công!",
-          description: "Bạn có thể đăng nhập ngay bây giờ.",
+          title: "Account created successfully!",
+          description: "You can log in now.",
         });
       } else {
         toast({
           variant: "destructive",
-          title: "Lỗi!",
-          description: "Không thể tạo tài khoản. Vui lòng thử lại.",
+          title: "Error!",
+          description: "Unable to create account. Please try again.",
         });
       }
     } catch (error) {
       console.log(error);
       toast({
         variant: "destructive",
-        title: "Lỗi!",
-        description: "Có lỗi xảy ra trong quá trình tạo tài khoản.",
+        title: "Error!",
+        description: "An error occurred while creating the account.",
       });
     } finally {
       setLoading(false);
@@ -77,14 +77,14 @@ export function CreatAccoutForm({
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
                   <h1 className="text-2xl font-bold">
-                    Chào mừng đến với chúng tôi
+                    Welcome to our platform
                   </h1>
                   <p className="text-balance text-muted-foreground">
-                    Tạo một tài khoản mới
+                    Create a new account
                   </p>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="username">Tên đăng nhập</Label>
+                  <Label htmlFor="username">Username</Label>
                   <Input
                     id="username"
                     type="text"
@@ -96,11 +96,11 @@ export function CreatAccoutForm({
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="first_name">Họ</Label>
+                  <Label htmlFor="first_name">First Name</Label>
                   <Input
                     id="first_name"
                     type="text"
-                    placeholder="Nguyễn"
+                    placeholder="John"
                     {...register("first_name")}
                   />
                   {errors.first_name && (
@@ -108,11 +108,11 @@ export function CreatAccoutForm({
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="last_name">Tên</Label>
+                  <Label htmlFor="last_name">Last Name</Label>
                   <Input
                     id="last_name"
                     type="text"
-                    placeholder="A"
+                    placeholder="Doe"
                     {...register("last_name")}
                   />
                   {errors.last_name && (
@@ -132,7 +132,7 @@ export function CreatAccoutForm({
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="phone">Số điện thoại</Label>
+                  <Label htmlFor="phone">Phone Number</Label>
                   <Input
                     id="phone"
                     type="text"
@@ -144,7 +144,7 @@ export function CreatAccoutForm({
                   )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Mật khẩu</Label>
+                  <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -156,7 +156,7 @@ export function CreatAccoutForm({
                   )}
                 </div>
                 <Button type="submit" disabled={loading} className="w-full">
-                  {loading ? "Đang xử lý..." : "Tạo tài khoản"}
+                  {loading ? "Processing..." : "Create Account"}
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -193,9 +193,9 @@ export function CreatAccoutForm({
                   </Button>
                 </div>
                 <div className="text-center text-sm">
-                  Bạn đã có tài khoản?{" "}
+                  Already have an account?{" "}
                   <Link href="/login" className="underline underline-offset-4">
-                    Đăng nhập ngay
+                    Log in now
                   </Link>
                 </div>
               </div>
@@ -213,13 +213,13 @@ export function CreatAccoutForm({
         </CardContent>
       </Card>
       <div className="text-center text-xs text-muted-foreground">
-        Bằng cách tiếp tục, bạn đồng ý với{" "}
+        By continuing, you agree to the{" "}
         <a href="#" className="underline">
-          Điều khoản dịch vụ
+          Terms of Service
         </a>{" "}
-        và{" "}
+        and{" "}
         <a href="#" className="underline">
-          Chính sách quyền riêng tư
+          Privacy Policy
         </a>
         .
       </div>

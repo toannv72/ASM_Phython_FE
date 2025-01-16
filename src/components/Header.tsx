@@ -151,7 +151,7 @@ const navigation = {
   ],
   pages: [
     { name: "Home", href: "/" },
-    { name: "Stores", href: "/" },
+    { name: "Products", href: "/product" },
   ],
 };
 

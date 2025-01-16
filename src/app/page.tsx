@@ -12,8 +12,6 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-   
-
     getData("/products/manage-products/?format=json")
       .then((response) => {
         console.log(response);
