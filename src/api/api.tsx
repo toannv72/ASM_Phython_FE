@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import axios, {  AxiosResponse, AxiosError } from "axios";
 
 // Tạo instance của axios với cấu hình cơ bản
 const api = axios.create({
@@ -8,7 +8,7 @@ const api = axios.create({
 
 // Thêm interceptor cho request
 api.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config) => {
     const accessToken = localStorage.getItem("user"); // Lấy token từ localStorage (hoặc nơi bạn lưu trữ)
 
     if (JSON.parse(accessToken)?.access) {
