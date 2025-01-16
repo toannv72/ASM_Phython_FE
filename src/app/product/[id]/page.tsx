@@ -8,16 +8,17 @@ import { Product } from "@/lib/product";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStorage } from "@/hooks/useLocalStorage";
 import { useToast } from "@/hooks/use-toast";
+import { Cart } from "@/lib/users";
 
 export default function ProductDetail({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<Product | undefined>(undefined);
   const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
   const router = useRouter();
-  const [cart, setCart] = useStorage("cart", []);
+  const [cart, setCart] = useStorage<Cart[]>("cart", []);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -76,21 +77,35 @@ export default function ProductDetail({
   };
 
   const handleAddCart = () => {
-    setCart(() => {
-      const existingProduct = cart.find((p) => p.id === product.id);
-
-      if (existingProduct) {
-        return cart.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity + quantity, selected:false } : p
-        );
-      }
-
-      return [...cart, { ...product, quantity, selected: false }]; // Thêm sản phẩm mới vào giỏ hàng nếu chưa tồn tại
+    if (!product) return;
+    const existingProduct = cart.find((p) => p.id === product?.id);
+    if (existingProduct) {
+        toast({
+          title: "Thêm sản phẩm",
+          description: "Sản phẩm đã được thêm vào giỏ hàng.",
+        });
+      return setCart(
+        cart.map((p) =>
+          p.id === product.id
+            ? { ...p, quantity: p.quantity + quantity, selected: false }
+            : p
+        )
+      );
+    }
+    toast({
+      title: "Thêm sản phẩm",
+      description: "Sản phẩm đã được thêm vào giỏ hàng.",
     });
-      toast({
-        title: "Thêm sản phẩm",
-        description: "Sản phẩm đã được thêm vào giỏ hàng.",
-      });
+
+    return setCart([
+      ...cart,
+      {
+        ...product,
+        price: product.price.toString(),
+        quantity,
+        selected: false,
+      },
+    ]);
   };
   if (!product) {
     return (

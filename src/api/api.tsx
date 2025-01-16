@@ -1,4 +1,4 @@
-import axios, {  AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 
 // Tạo instance của axios với cấu hình cơ bản
 const api = axios.create({
@@ -10,14 +10,18 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("user"); // Lấy token từ localStorage (hoặc nơi bạn lưu trữ)
+    if (accessToken) {
+      console.log(JSON.parse(accessToken));
+      if (accessToken && JSON.parse(accessToken)?.access) {
+        const Token = JSON.parse(accessToken)?.access?.replace(/"/g, "");
 
-    if (JSON.parse(accessToken)?.access) {
-      const Token = JSON.parse(accessToken)?.access?.replace(/"/g, "");
-      console.log(  Token);
-      config.headers = config.headers || {}; // Đảm bảo headers không bị undefined
+        console.log(Token);
+        config.headers = config.headers || {}; // Đảm bảo headers không bị undefined
 
-      config.headers["Authorization"] = `Bearer ${Token}`;
+        config.headers["Authorization"] = `Bearer ${Token}`;
+      }
     }
+
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
@@ -27,7 +31,7 @@ api.interceptors.request.use(
 export const getData = async <T,>(
   endpoint: string,
   params: Record<string, unknown> = {},
-  headers: Record<string, unknown> = {}
+  headers: Record<string, string> = {}
 ): Promise<T> => {
   try {
     const response: AxiosResponse<T> = await api.get(endpoint, {
@@ -43,11 +47,12 @@ export const getData = async <T,>(
     throw axiosError;
   }
 };
+ 
 
 export const postData = async <T, U = unknown>(
   endpoint: string,
   data: U,
-  headers: Record<string, unknown> = {}
+  headers: Record<string, string> = {}
 ): Promise<T> => {
   try {
     const response: AxiosResponse<T> = await api.post(endpoint, data, {
@@ -69,7 +74,7 @@ export const putData = async <T, U = unknown>(
   endpoint: string,
   id: string | number,
   data: U,
-  headers: Record<string, unknown> = {}
+  headers: Record<string, string> = {}
 ): Promise<T> => {
   try {
     const response: AxiosResponse<T> = await api.put(
@@ -92,7 +97,7 @@ export const deleteData = async <T,>(
   endpoint: string,
   id: string | number,
   data: Record<string, unknown> = {},
-  headers: Record<string, unknown> = {}
+  headers: Record<string, string> = {}
 ): Promise<T> => {
   try {
     const response: AxiosResponse<T> = await api.delete(`${endpoint}/${id}`, {

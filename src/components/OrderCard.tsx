@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { Order, OrderDetail } from "./../lib/order";
 
-const CartItem = ({ order, item }) => {
-  console.log("2213", order?.status);
+const CartItem = ({ item }: { item: OrderDetail }) => {
   return (
     <>
       <div className="flex items-center py-4 border-b">
@@ -27,30 +27,18 @@ const CartItem = ({ order, item }) => {
           </p>
         </div>
         <div className="text-right">
-          {item?.service?.promotion ? (
-            <>
-              <p className="text-sm text-gray-500 line-through mt-2">
-                {item?.service?.price.toLocaleString()}đ
-              </p>
-              <p className="font-bold text-blue-600">
-                {item.service.promotion.newPrice.toLocaleString()}đ
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-bold text-blue-600">
-                {item.price.toLocaleString()}đ
-              </p>
-            </>
-          )}
+          <>
+            <p className="font-bold text-blue-600">
+              {item.price.toLocaleString()}đ
+            </p>
+          </>
         </div>
       </div>
     </>
   );
 };
 
-export default function OrderCard({ order }) {
-   
+export default function OrderCard({ order }: { order: Order }) {
   return (
     <div className=" mx-auto bg-white rounded-lg shadow-md overflow-hidden border border-[#7F7F7F]">
       <div className="p-4 bg-white flex  justify-between items-center border-b border-black">
@@ -67,7 +55,7 @@ export default function OrderCard({ order }) {
       <div className="p-4">
         {order?.order_details &&
           order?.order_details.map((item) => (
-            <CartItem key={item.id} item={item} order={order} />
+            <CartItem key={item.id} item={item} />
           ))}
       </div>
       <div className="p-4 bg-white  border-t border-[#7F7F7F]">

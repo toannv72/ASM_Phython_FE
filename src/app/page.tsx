@@ -1,61 +1,24 @@
 "use client";
 import { getData } from "@/api/api";
 import CategoryPreviews from "@/components/CategoryPreviews";
+import { Product } from "@/lib/product";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 // Định nghĩa type cho dữ liệu gốc từ API
  
-// Định nghĩa type cho sản phẩm sau khi xử lý
-type Product = {
-  id: number;
-  name: string;
-  href: string;
-  price: string; // Giá đã được định dạng thành chuỗi
-  description: string;
-  options: string;
-  imageSrc: string;
-  imageAlt: string;
-};
-
+ 
 export default function Home() {
   // Sử dụng type đã định nghĩa
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    // async function fetchProducts() {
-    //   const response = await fetch(
-    //     "https://gl03.sangtran.dev/products/manage-products/?format=json"
-    //   );
-    //   const data: RawProduct[] = await response.json(); // Định kiểu cho dữ liệu gốc
-    //   const formattedProducts: Product[] = data.map((product) => ({
-    //     id: product.id,
-    //     name: product.name,
-    //     href: `product/${product.id}`,
-    //     price: `$${product.price}`, // Định dạng giá thành chuỗi
-    //     description: product.description,
-    //     options: product.category.name,
-    //     imageSrc: product.images[0]?.image || "", // Xử lý hình ảnh
-    //     imageAlt: product.name,
-    //   }));
-    //   setProducts(formattedProducts);
-    // }
-
-    // fetchProducts();
+   
 
     getData("/products/manage-products/?format=json")
       .then((response) => {
         console.log(response);
-          const formattedProducts: Product[] = response.map((product) => ({
-            id: product.id,
-            name: product.name,
-            href: `product/${product.id}`,
-            price: `$${product.price}`, // Định dạng giá thành chuỗi
-            description: product.description,
-            options: product.category.name,
-            imageSrc: product.images[0]?.image || "", // Xử lý hình ảnh
-            imageAlt: product.name,
-          }));
-          setProducts(formattedProducts);
+           
+          setProducts(response as Product[]);
       })
       .catch((error) => {
         console.log(error);
@@ -77,13 +40,13 @@ export default function Home() {
               className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
             >
               <img
-                alt={product.imageAlt}
-                src={product.imageSrc}
+                alt={product.name}
+                src={product.images?.[0].image}
                 className="aspect-[3/4] w-full bg-gray-200 object-cover group-hover:opacity-75 sm:aspect-auto sm:h-96"
               />
               <div className="flex flex-1 flex-col space-y-2 p-4">
                 <h3 className="text-sm font-medium text-gray-900">
-                  <Link href={product.href}>
+                  <Link href={`/product/${product.id}`}>
                     <span aria-hidden="true" className="absolute inset-0" />
                     {product.name}
                   </Link>
@@ -91,7 +54,7 @@ export default function Home() {
                 <p className="text-sm text-gray-500">{product.description}</p>
                 <div className="flex flex-1 flex-col justify-end">
                   <p className="text-sm italic text-gray-500">
-                    {product.options}
+                    {product.category.name}
                   </p>
                   <p className="text-base font-medium text-gray-900">
                     {product.price}

@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useState } from "react";
-import { User } from "@/lib/users";
+import { FormData } from "@/lib/users";
 
 export function CreatAccoutForm({
   className,
@@ -29,7 +29,7 @@ export function CreatAccoutForm({
     formState: { errors },
   } = methods;
 
-  const onSubmit = async (data: User) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
       // Thêm giá trị mặc định cho `address` và `image`

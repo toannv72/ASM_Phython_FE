@@ -1,21 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 
-export const useStorage = (key: string, initialValue) => {
-  const [storedValue, setStoredValue] = useState(() => {
+export function useStorage<T>(
+  key: string,
+  initialValue: T
+): [T, Dispatch<SetStateAction<T>>, () => Promise<void>] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
-      const item = window?.localStorage?.getItem(key);
-      return item ? JSON.parse(item) : initialValue ?? {};
+      const item = window.localStorage.getItem(key);
+      // Nếu có dữ liệu trong localStorage, parse nó, nếu không thì trả về initialValue
+      return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
-      console.log(error);
-      return initialValue ?? {};
+      console.error(error);
+      return initialValue;
     }
   });
 
-  const saveStoredValue = async (value) => {
+  const saveStoredValue = async (value: T) => {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -23,16 +27,17 @@ export const useStorage = (key: string, initialValue) => {
     try {
       const item = window.localStorage.getItem(key);
       if (item) {
-        setStoredValue(JSON.parse(item));
+        setStoredValue(JSON.parse(item) as T);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   useEffect(() => {
     saveStoredValue(storedValue);
+    // Chỉ set lại khi key hoặc storedValue thay đổi
   }, [key, storedValue]);
 
   return [storedValue, setStoredValue, loadStoredValue];
-};
+}

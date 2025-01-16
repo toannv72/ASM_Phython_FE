@@ -1,10 +1,10 @@
 "use client";
-import {   useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
-  DialogPanel, 
-  PopoverGroup, 
+  DialogPanel,
+  PopoverGroup,
 } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -25,6 +25,7 @@ import {
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { AvatarFallback } from "@/components/ui/avatar";
 import { usePathname, useRouter } from "next/navigation";
+import { UserLogin } from "@/lib/users";
 
 const navigation = {
   categories: [
@@ -157,8 +158,31 @@ const navigation = {
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [user, setUser] = useState({});
-  const [storedUser, setStoredUser, loadStoredUser] = useStorage("user", {});
+  const [user, setUser] = useState<UserLogin>({
+    refresh: "",
+    access: "",
+    userid: 0,
+    username: "",
+    email: "",
+    phone: "",
+    address: "",
+    status: "",
+    accountid: 0,
+  });
+  const [storedUser, setStoredUser, loadStoredUser] = useStorage<UserLogin>(
+    "user",
+    {
+      refresh: "",
+      access: "",
+      userid: 0,
+      username: "",
+      email: "",
+      phone: "",
+      address: "",
+      status: "",
+      accountid: 0,
+    }
+  );
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
@@ -311,7 +335,7 @@ export default function Header() {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => { 
+                          onClick={() => {
                             router.push("/my-order");
                           }}
                         >
@@ -321,7 +345,17 @@ export default function Header() {
                         <DropdownMenuItem>Team</DropdownMenuItem> */}
                         <DropdownMenuItem
                           onClick={() => {
-                            setStoredUser({});
+                            setStoredUser({
+                              refresh: "",
+                              access: "",
+                              userid: 0,
+                              username: "",
+                              email: "",
+                              phone: "",
+                              address: "",
+                              status: "",
+                              accountid: 0,
+                            });
                             router.push("/login");
                           }}
                         >

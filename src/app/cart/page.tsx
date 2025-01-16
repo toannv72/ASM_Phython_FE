@@ -2,44 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { Trash2, Minus, Plus, ShoppingBag } from "lucide-react";
- 
+
 import { useStorage } from "@/hooks/useLocalStorage";
 import { useRouter } from "next/navigation";
 import { Product } from "@/lib/product";
 
- 
-
 export default function ShoppingCart() {
   const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
-  const [cart, setCart, loadingCart] = useStorage("cart", []);
-  const updateQuantity = (id: string, change: number) => {
-    setProducts(
-      products.map((product) => {
-        if (product.id === id) {
-          const newQuantity = Math.max(1, product.quantity + change);
-          return { ...product, quantity: newQuantity };
-        }
-        return product;
-      })
-    );
-    setCart(
-      products.map((product) => {
-        if (product.id === id) {
-          const newQuantity = Math.max(1, product.quantity + change);
-          return { ...product, quantity: newQuantity };
-        }
-        return product;
-      })
-    );
+  const [cart, setCart, loadingCart] = useStorage<Product[]>("cart", []);
+  const updateQuantity = (id: number, change: number) => {
+     const updatedProducts = products.map((product) => {
+       if (product.id === id) {
+         const newQuantity = Math.max(1, product.quantity + change);
+         return { ...product, quantity: newQuantity };
+       }
+       return product;
+     });
+
+     // Cập nhật cả state của products và cart với mảng sản phẩm đã sửa đổi
+     setProducts(updatedProducts);
+     setCart(updatedProducts);
   };
 
-  const removeProduct = (id: string) => {
+  const removeProduct = (id: number) => {
     setProducts(products.filter((product) => product.id !== id));
     setCart(products.filter((product) => product.id !== id));
   };
 
-  const toggleSelect = (id: string) => {
+  const toggleSelect = (id: number) => {
     setProducts(
       products.map((product) => {
         if (product.id === id) {
@@ -75,8 +66,6 @@ export default function ShoppingCart() {
 
   const handleCheckout = () => {
     if (selectedProducts.length > 0) {
-    
-
       // Chuyển đến trang thanh toán
       router.push(
         `/checkout?products=${encodeURIComponent(

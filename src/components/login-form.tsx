@@ -10,11 +10,11 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { LoginFormYup } from "@/app/yup/accout";
-import { User } from "@/lib/users"; 
+import { LoginFormYup } from "@/app/yup/accout"; 
 import { useStorage } from "@/hooks/useLocalStorage";
 import { useRouter } from "next/navigation";
 import { postData } from "@/api/api";
+import { UserLogin, UserLoginForm } from "@/lib/users";
 
 export function LoginForm({
   className,
@@ -22,7 +22,17 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [, setUser] = useStorage("user", {});
+  const [, setUser] = useStorage<UserLogin>("user", {
+    refresh: "",
+    access: "",
+    userid: 0,
+    username: "",
+    email: "",
+    phone: "",
+    address: "",
+    status: "",
+    accountid: 0,
+  });
   const router = useRouter();
 
   const methods = useForm({
@@ -34,14 +44,15 @@ export function LoginForm({
     formState: { errors },
   } = methods;
 
-  const onSubmit = async (data: User) => {
+  const onSubmit = async (data: UserLoginForm) => {
     setLoading(true);
     try {
       // Thêm giá trị mặc định cho `address` và `image`
       postData("/accounts/login/", data)
         .then((response) => {
           console.log(response);
-          setUser(response);
+          const data = response as UserLogin;
+          setUser(data);
 
           router.push("/");
           toast({
@@ -57,7 +68,6 @@ export function LoginForm({
             description: "Tài khoản hoặc mật khẩu không chính xác.",
           });
         });
- 
     } catch (error) {
       console.log(error);
       toast({

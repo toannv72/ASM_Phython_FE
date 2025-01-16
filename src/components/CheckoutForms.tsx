@@ -3,6 +3,7 @@
 import { postData } from "@/api/api";
 import { useStorage } from "@/hooks/useLocalStorage";
 import { Product } from "@/lib/product";
+import { UserLogin } from "@/lib/users";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,7 +11,17 @@ import { useEffect, useState } from "react";
 export default function CheckoutForms() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
-  const [user] = useStorage("user", {});
+  const [user] = useStorage<UserLogin>("user", {
+    refresh: "",
+    access: "",
+    userid: 0,
+    username: "",
+    email: "",
+    phone: "",
+    address: "",
+    status: "",
+    accountid: 0,
+  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -30,13 +41,16 @@ export default function CheckoutForms() {
   }, [searchParams]);
 
   const totalAmount = products.reduce((sum, product) => {
-    return sum + parseFloat(product.price.replace("$", "")) * product.quantity;
+    return (
+      sum +
+      parseFloat(product.price.toString().replace("$", "")) * product.quantity
+    );
   }, 0);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -63,7 +77,7 @@ export default function CheckoutForms() {
       console.log({
         order_details: products.map((product) => ({
           quantity: product.quantity,
-          price: product.price.replace("$", ""),
+          price: product.price.toString().replace("$", ""),
           productId: product.id,
         })),
         amount: totalAmount,
@@ -78,7 +92,7 @@ export default function CheckoutForms() {
       postData("/orders/manage-order/", {
         order_details: products.map((product) => ({
           quantity: product.quantity,
-          price: product.price.replace("$", ""),
+          price: product.price.toString().replace("$", ""),
           productId: product.id,
         })),
         amount: totalAmount,
@@ -90,8 +104,9 @@ export default function CheckoutForms() {
         accountId: user.userid,
       })
         .then((response) => {
-          console.log(response);
-          window.location.href = response.payment_url;
+          const data = response as { payment_url: string };
+          if (!data.payment_url) return;
+          window.location.href = data.payment_url;
         })
         .catch((error) => {
           console.error("Error placing order:", error);
