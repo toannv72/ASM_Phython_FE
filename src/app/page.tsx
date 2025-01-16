@@ -24,7 +24,7 @@ export default function Home() {
   useEffect(() => {
     // async function fetchProducts() {
     //   const response = await fetch(
-    //     "http://127.0.0.1:8000/products/manage-products/?format=json"
+    //     "https://gl03.sangtran.dev/products/manage-products/?format=json"
     //   );
     //   const data: RawProduct[] = await response.json(); // Định kiểu cho dữ liệu gốc
     //   const formattedProducts: Product[] = data.map((product) => ({

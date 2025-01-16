@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
 // Tạo instance của axios với cấu hình cơ bản
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/",
+  baseURL: "https://gl03.sangtran.dev/",
   // withCredentials: true,
 });
 

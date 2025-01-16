@@ -26,7 +26,7 @@ export default function ProductDetail({
 
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/products/manage-product/${resolvedParams.id}/?format=json`
+          `https://gl03.sangtran.dev/products/manage-product/${resolvedParams.id}/?format=json`
         );
         const data = response.data;
 
