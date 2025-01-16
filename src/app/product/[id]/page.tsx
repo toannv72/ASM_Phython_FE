@@ -17,7 +17,7 @@ export default function ProductDetail({
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
   const router = useRouter();
-  const [cart, setCart, loadingCart] = useStorage("cart", []);
+  const [cart, setCart] = useStorage("cart", []);
   const { toast } = useToast();
 
   useEffect(() => {

@@ -4,15 +4,7 @@ import CategoryPreviews from "@/components/CategoryPreviews";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 // Định nghĩa type cho dữ liệu gốc từ API
-type RawProduct = {
-  id: number;
-  name: string;
-  price: number; // giá từ API có thể là số
-  description: string;
-  category: { name: string }; // API có object category
-  images: { image: string }[]; // API trả về mảng images
-};
-
+ 
 // Định nghĩa type cho sản phẩm sau khi xử lý
 type Product = {
   id: number;
