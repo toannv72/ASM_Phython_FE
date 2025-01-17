@@ -70,9 +70,11 @@ export default function ProductDetail({
 
   const handleCheckout = () => {
     if (!product) return;
-    // Chuyển hướng sang trang `/checkout` với dữ liệu sản phẩm và số lượng
+    // Chuyển hướng sang trang `/checkout` với dữ liệu sản phẩm và số lượng 
     router.push(
-      `/checkout?products=${encodeURIComponent(JSON.stringify([product]))}`
+      `/checkout?products=${encodeURIComponent(
+        JSON.stringify([{ ...product, quantity }])
+      )}`
     );
   };
 
@@ -80,10 +82,10 @@ export default function ProductDetail({
     if (!product) return;
     const existingProduct = cart.find((p) => p.id === product?.id);
     if (existingProduct) {
-        toast({
-          title: "Add Product",
-          description: "The product has been added to the cart.",
-        });
+      toast({
+        title: "Add Product",
+        description: "The product has been added to the cart.",
+      });
       return setCart(
         cart.map((p) =>
           p.id === product.id
