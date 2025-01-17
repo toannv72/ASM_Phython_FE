@@ -85,7 +85,7 @@ export default function CheckoutForms() {
         content: "Order content",
         notes: notes,
         method: "vnpay",
-        redirect_url: "http://localhost:3000/order",
+        redirect_url: "https://asm-phython-fe.vercel.app/order",
         accountId: user.userid,
       });
 
